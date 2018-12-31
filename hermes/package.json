@@ -3,15 +3,23 @@
     "@types/koa": "^2.0.47",
     "@types/koa-router": "^7.0.35",
     "@types/ws": "^6.0.1",
+    "install": "^0.12.2",
     "koa": "^2.6.2",
     "koa-router": "^7.4.0",
     "mta-gtfs": "^1.1.0",
     "nodemon": "^1.18.9",
+    "npm": "^6.5.0",
+    "pg": "^7.7.1",
+    "pg-hstore": "^2.3.2",
+    "reflect-metadata": "^0.1.12",
+    "sequelize": "^4.42.0",
+    "sequelize-cli": "^5.4.0",
+    "sequelize-typescript": "^0.6.6",
     "ts-node": "^7.0.1",
     "typescript": "^3.2.2",
     "ws": "^6.1.2"
   },
   "scripts": {
-    "dev": "nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/server.ts"
+    "dev": "nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node --files ./src/server.ts"
   }
 }

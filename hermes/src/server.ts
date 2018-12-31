@@ -2,6 +2,9 @@ import * as Koa from 'koa';
 import * as Router from 'koa-router';
 import { getSchedule, getStop } from './dao/mta';
 import { sendMessage } from './utils/notifications';
+import { Stop } from './models/stop';
+import sequelize from './sequelize';
+import { setStops } from './services/sync';
 
 const app = new Koa();
 const router = new Router();
@@ -20,12 +23,9 @@ router.get('/mta/stops', async (ctx) => {
   ctx.body = await getStop();
 });
 
-router.get('/noti', async (ctx) => {
-  try {
-    ctx.body = await sendMessage();
-  } catch (err) {
-    console.log(err);
-  }
+router.get('/sync-stops', async (ctx) => {
+  setStops();
+  ctx.body = 'Test';
 });
 
 router.get('/*', async (ctx) => {

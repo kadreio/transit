@@ -2,12 +2,10 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "strict": true,
+    "strict": false,
     "noImplicitAny": false,
     "outDir": "./dist",
-    "typeRoots": [
-      "types",
-      "node_modules/@types"
-    ]
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }

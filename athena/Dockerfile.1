@@ -1,0 +1,58 @@
+FROM golang
+
+RUN apt update
+RUN apt install -y git default-jdk maven
+RUN apt install zip unzip
+RUN mkdir /scratch
+
+RUN (cd /scratch && git clone --depth=1 https://github.com/apache/pulsar.git)
+RUN (cd /scratch/pulsar && mvn install -DskipTests)
+
+RUN ln -s /scratch/pulsar /pulsar
+RUN apt install -y libxml2-utils
+
+RUN cd /scratch
+RUN apt install -y build-essential
+RUN wget http://www.cmake.org/files/v3.2/cmake-3.2.2.tar.gz
+RUN tar xf cmake-3.2.2.tar.gz
+RUN (cd cmake-3.2.2 && ./configure && make)
+RUN apt install -y libssl-dev
+RUN apt install -y libcurl4-openssl-dev
+RUN apt install -y liblog4cxx-dev
+RUN apt install -y libboost-python1.62.0
+RUN apt install -y libprotobuf-dev
+RUN apt install -y libboost-all-dev
+RUN apt install -y google-mock
+RUN apt install -y libgtest-dev
+RUN apt install -y libjsoncpp-dev
+RUN apt install -y checkinstall
+
+RUN (cd cmake-3.2.2 && checkinstall)
+
+RUN curl -OL https://github.com/google/protobuf/releases/download/v2.6.1/protoc-2.6.1-linux-x86_64.zip
+RUN unzip -o protoc-2.6.1-linux-x86_64.zip -d /usr/local bin/protoc
+RUN rm -f protoc-2.6.1-linux-x86_64.zip
+
+RUN (cd /scratch/pulsar &&  bash pulsar-client-cpp/pkg/deb/build-deb.sh)
+
+ARG app_env
+ENV APP_ENV $app_env
+
+
+COPY ./app /go/src/github.com/user/myProject/app
+WORKDIR /go/src/github.com/user/myProject/app
+
+RUN go get -u github.com/apache/incubator-pulsar/pulsar-client-go/pulsar
+
+RUN go get ./
+RUN go build
+
+CMD if [ ${APP_ENV} = production ]; \
+	then \
+	app; \
+	else \
+	go get github.com/pilu/fresh && \
+	fresh; \
+	fi
+
+EXPOSE 8080

@@ -1,17 +1,30 @@
 import * as websocket from 'ws';
 
-const topic = "ws://pulsar:8080/ws/v2/producer/persistent/public/default/my-topic1";
-let ws;
+const ptopic = "ws://pulsar:8080/ws/v2/producer/persistent/public/default/my-topic1";
+const stopic = "ws://pulsar:8080/ws/v2/consumer/persistent/public/default/my-topic1/exclusive"
 
-const getWSConnection = () => {
-  if(!ws) {
+let pws;
+const getProductionWS = () => {
+  if(!pws) {
     try {
-      ws = new websocket(topic);
+      pws = new websocket(ptopic);
     } catch (err) {
-      ws = getWSConnection();
+      pws = getProductionWS();
     }
   }
-  return ws;
+  return pws;
+}
+
+let cws;
+const getConsumptionSocket = () => {
+  if(!cws) {
+    try {
+      cws = new websocket(stopic);
+    } catch (err) {
+      cws = getConsumptionSocket();
+    }
+  }
+  return cws;
 }
 
 const message = {
@@ -23,14 +36,16 @@ const message = {
   "context" : "1"
 };
 
-getWSConnection().on('message', function(message) {
+getConsumptionSocket().on('message', function(message) {
   console.log('received ack', message);
 });
+
+
 
 export const sendMessage = async () => {
 
   return new Promise((res, rej) => {
-    getWSConnection().send(JSON.stringify(message), (err) => {
+    getProductionWS().send(JSON.stringify(message), (err) => {
       if(err) {
         rej(err);
       }
