@@ -1,0 +1,30 @@
+version: '3.2'
+services:
+  postgres:
+    restart: always
+    image: postgres:11.1
+    ports:
+      - "5432:5432"
+
+  hermes:
+    restart: always
+    build:
+      context: ./hermes
+    depends_on:
+      - postgres
+      - pulsar
+    ports:
+      - "3000:3000"
+    volumes:
+      - "${HERMES_SRC_DIR}:/app:delegated"
+    command: yarn run dev
+
+  pulsar:
+    restart: always
+    image: apachepulsar/pulsar:2.0.1-incubating
+    command: bin/pulsar standalone
+    ports:
+      - "6650:6650"
+      - "8080:8080"
+    volumes:
+      - "${PROJECTS_DATA}/pulsar:/pulsar/data:delegated"
