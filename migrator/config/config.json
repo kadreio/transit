@@ -1,0 +1,26 @@
+{
+  "development": {
+    "database": "alexandria",
+    "dialect": "postgres",
+    "username": "postgresql",
+    "host": "postgres",
+    "password": "docker",
+    "dialectOptions": { "ssl": false }
+  },
+  "test": {
+    "database": "alexandria",
+    "dialect": "postgres",
+    "username": "postgresql",
+    "host": "postgres",
+    "password": "docker",
+    "dialectOptions": { "ssl": false }
+  },
+  "production": {
+    "database": "alexandria",
+    "dialect": "postgres",
+    "username": "postgresql",
+    "host": "postgres",
+    "password": "docker",
+    "dialectOptions": { "ssl": false }
+  }
+}

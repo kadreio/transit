@@ -11,7 +11,5 @@ const sequelize = new Sequelize({
 });
 
 sequelize.addModels([Stop]);
-sequelize.sync({
-  force: true
-})
+
 export default sequelize;

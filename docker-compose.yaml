@@ -5,21 +5,36 @@ services:
     image: postgres:11.1
     environment:
       POSTGRES_PASSWORD: docker
-      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_DB: alexandria
       POSTGRES_USER: postgresql
     ports:
       - "5432:5432"
+    volumes:
+      - ./_data/postgres:/var/lib/postgresql/data
+    command: postgres -N 500
 
-  hermes:
+  athena:
     restart: always
     build:
-      context: ./hermes
+      context: ./athena
+    ports:
+      - "3001:8080"
+    depends_on:
+      - postgres
+      - hermes
+    volumes:
+      - "${SRC_DIR}/athena/app:/go/src/dylan.com/user/athena/app:delegated"
+
+  migrator:
+    restart: always
+    build:
+      context: ./migrator
     depends_on:
       - postgres
     ports:
       - "3000:3000"
     volumes:
-      - "${SRC_DIR}/hermes:/app:delegated"
+      - "${SRC_DIR}/migrator:/app:delegated"
     command: yarn run dev
 
   hephaestus:
